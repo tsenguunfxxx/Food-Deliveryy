@@ -1,84 +1,102 @@
 "use client";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
-import axios from "axios";
-import Image from "next/image";
+
 import { useEffect, useState } from "react";
-import { Coins, Plus, TextAlignJustify } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Truck } from "lucide-react";
-import AddCategoryDialog from "@/components/ui/admin/AddCategoryDialog";
+
+import type { CategoryType, FoodType } from "@/common/common";
+import { api } from "@/lib/api";
+import { AdminGuard } from "@/components/admin/AdminGuard";
+import { AdminSidebar } from "@/components/admin/AdminSidebar";
+import { EditFoodDialog } from "@/components/ui/admin/EditFoodDialog";
 import FoodsSection from "@/components/ui/admin/FoodsSection";
 import { MenuHeader } from "./MenuHeader";
-type categoryType = {
-  categoryName: string;
-  _id: string;
-};
+
 const Page = () => {
-  const [categories, setCategories] = useState<categoryType[]>([]);
-  const [foods, setFoods] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [categories, setCategories] = useState<CategoryType[]>([]);
+  const [foods, setFoods] = useState<FoodType[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [activeCategory, setActiveCategory] = useState("all");
+  const [editingFood, setEditingFood] = useState<FoodType | null>(null);
+
   const getCategories = async () => {
-    setLoading(true);
-    const response = await axios.get("http://localhost:3000/category");
-    console.log("irj bga hariu", response);
-    setCategories(response.data.foodCategories);
-    setLoading(false);
+    const response = await api.get<{ foodCategories: CategoryType[] }>(
+      "/category",
+    );
+    setCategories(response.data.foodCategories ?? []);
   };
+
   const getFoods = async () => {
-    const response = await axios.get("http://localhost:3000/food  ");
-    console.log("FOODS RESPONCE", response);
-    setFoods(response.data.foods);
+    const response = await api.get<{ foods: FoodType[] }>("/food");
+    setFoods(response.data.foods ?? []);
   };
+
+  const loadAll = async () => {
+    try {
+      await Promise.all([getCategories(), getFoods()]);
+    } catch {
+      setError("Мэдээлэл ачаалахад алдаа гарлаа.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    getCategories();
-    getFoods();
+    loadAll();
   }, []);
 
+  const visibleCategories =
+    activeCategory === "all"
+      ? categories
+      : categories.filter((category) => category._id === activeCategory);
+
   return (
-    <div className="h-screen w-full flex">
-      <div className="h-[1024px] w-[205px] py-9 px-5 flex flex-col gap-[40px]">
-        <div className="flex w-[165px] h-[44px] items-center gap-2 ">
-          <Image src="/zurag.svg" alt="" width={36} height={29} />{" "}
-          <div>
-            <h1 className="text-black text-xl font-semibold">NomNom</h1>
-            <h3 className="text-gray-400">Swift delivery</h3>
-          </div>
-        </div>{" "}
-        <div className="flex flex-col gap-[24px] items-center px-6 py-0 h-[104px]">
-          <Button className="px-6 py-0 rounded-full gap-[10px]">
-            {" "}
-            <TextAlignJustify />
-            Food Menu
-          </Button>
-          <Button className="bg-gray-50 px-6 rounded-full ">
-            {" "}
-            <Truck className="text-black w-[18px] h-[13px]" />
-            <h2 className="text-black">Orders</h2>
-          </Button>
-        </div>
-      </div>
-      <div className="w-full rounded-xl p-6 space-y-4 bg-gray-100 p-6">
-        <div>
-          <h3 className="text-black text-xl font-semibold">Dishes Category</h3>
-          <MenuHeader
-            getCategories={getCategories}
-            categories={categories}
-            loading={loading}
-          />
-        </div>
-        {categories?.map((category) => {
-          return (
-            <FoodsSection
-              getFoods={getFoods}
+    <AdminGuard>
+      <div className="flex min-h-screen w-full flex-col bg-white md:flex-row">
+        <AdminSidebar />
+
+        <main className="flex-1 space-y-5 bg-gray-100 p-6">
+          <div className="space-y-4 rounded-xl bg-white p-5">
+            <h1 className="text-xl font-semibold">Dishes category</h1>
+            <MenuHeader
+              loading={loading}
+              categories={categories}
               foods={foods}
+              activeCategory={activeCategory}
+              onSelectCategory={setActiveCategory}
+              getCategories={getCategories}
+            />
+          </div>
+
+          {error && (
+            <p className="rounded-xl bg-white p-4 text-sm text-[#ef4444]">
+              {error}
+            </p>
+          )}
+
+          {visibleCategories.map((category) => (
+            <FoodsSection
+              key={category._id}
               categoryName={category.categoryName}
               categoryId={category._id}
-            ></FoodsSection>
-          );
-        })}
+              categories={categories}
+              foods={foods}
+              getFoods={getFoods}
+              onEdit={setEditingFood}
+            />
+          ))}
+        </main>
+
+        <EditFoodDialog
+          food={editingFood}
+          categories={categories}
+          onOpenChange={(open) => {
+            if (!open) setEditingFood(null);
+          }}
+          onSaved={getFoods}
+        />
       </div>
-    </div>
+    </AdminGuard>
   );
 };
+
 export default Page;

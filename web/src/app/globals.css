@@ -128,3 +128,23 @@
     @apply font-sans;
   }
 }
+/* Footer-ийн тасралтгүй гүйдэг тууз. Хоёр ижил хуулбарыг зэрэгцүүлж
+   тавиад нийт өргөний хагасаар шилжүүлэхэд заагийг мэдрэхгүй давтагдана. */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  animation: marquee 45s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+}

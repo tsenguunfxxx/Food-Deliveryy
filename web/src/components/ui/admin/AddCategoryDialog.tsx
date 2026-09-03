@@ -12,7 +12,7 @@ import { Button } from "../button";
 import { Plus } from "lucide-react";
 import { Input } from "../input";
 import { useState } from "react";
-import axios from "axios";
+import { api } from "@/lib/api";
 
 type AddCategoryDialogProps = {
   getCategories: () => void;
@@ -25,7 +25,7 @@ const AddCategoryDialog = ({ getCategories }: AddCategoryDialogProps) => {
     if (!value.trim()) return;
 
     try {
-      await axios.post("http://localhost:3000/category", {
+      await api.post("/category", {
         categoryName: value,
       });
 

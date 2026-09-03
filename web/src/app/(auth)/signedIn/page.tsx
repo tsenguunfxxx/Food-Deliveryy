@@ -5,7 +5,10 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import Image from "next/image";
-import axios from "axios";
+import { useRouter } from "next/navigation";
+
+import { getErrorMessage } from "@/lib/api";
+import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, Eye, EyeOff } from "lucide-react";
@@ -20,14 +23,14 @@ import { Input } from "@/components/ui/input";
 
 const formSchema = z.object({
   email: z.string().email("Зөв имэйл оруулна уу"),
-  password: z
-    .string()
-    .min(6, "Нууц үг хамгийн багадаа 6 тэмдэгт байна")
-    .max(10, "Нууц үг 10-с ихгүй тэмдэгт байна"),
+  password: z.string().min(1, "Нууц үгээ оруулна уу"),
 });
 
 const Page = () => {
+  const router = useRouter();
+  const { signIn } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
+  const [serverError, setServerError] = useState("");
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -36,12 +39,13 @@ const Page = () => {
     },
   });
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
-    console.log("durmee dagsn bn ", data);
-
-    await axios.post(" http://localhost:3001/User/signedIn", {
-      email: data.email,
-      password: data.password,
-    });
+    setServerError("");
+    try {
+      await signIn(data.email, data.password);
+      router.push("/");
+    } catch (error) {
+      setServerError(getErrorMessage(error, "Нэвтрэхэд алдаа гарлаа"));
+    }
   };
 
   return (
@@ -50,7 +54,7 @@ const Page = () => {
       <div className="flex w-1/2 flex-col items-center justify-center px-8">
         <div className="w-full max-w-sm">
           <Button variant="outline" size="icon" className="mb-4">
-            <Link href="/admin/menu     ">
+            <Link href="/admin/menu">
               {" "}
               <ChevronLeft />
             </Link>
@@ -121,9 +125,6 @@ const Page = () => {
                         )}
                       </button>
                     </div>
-                    <FieldDescription>
-                      Must be between 6 and 10 characters.
-                    </FieldDescription>
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
                     )}
@@ -132,8 +133,21 @@ const Page = () => {
               />
             </FieldGroup>
 
+            <Link
+              href="/forgot-password"
+              className="-mt-2 self-start text-sm text-muted-foreground underline"
+            >
+              Forgot password?
+            </Link>
+
+            {serverError && (
+              <p className="text-sm text-destructive">{serverError}</p>
+            )}
+
             <Field orientation="horizontal" className="mt-2">
-              <Button type="submit">Let&apos;s Go</Button>
+              <Button type="submit" disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting ? "Түр хүлээнэ үү..." : "Let's Go"}
+              </Button>
               <Button variant="outline" type="button">
                 Cancel
               </Button>
@@ -141,10 +155,10 @@ const Page = () => {
           </form>
 
           <p className="mt-6 text-sm text-muted-foreground">
-            Already have an account?{" "}
-            <a href="/login" className="font-medium text-primary underline">
-              Log in
-            </a>
+            Don&apos;t have an account?{" "}
+            <Link href="/signup" className="font-medium text-primary underline">
+              Sign up
+            </Link>
           </p>
         </div>
       </div>

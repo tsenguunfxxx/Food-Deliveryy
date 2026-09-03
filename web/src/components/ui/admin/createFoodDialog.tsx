@@ -10,7 +10,7 @@ import {
 import { Input } from "../input";
 import { Button } from "../button";
 import { useState } from "react";
-import axios from "axios";
+import { api } from "@/lib/api";
 import { Plus } from "lucide-react";
 import { uploadFile } from "@/lib/uploadFile";
 export const CreatFoodDialog = ({
@@ -47,7 +47,7 @@ export const CreatFoodDialog = ({
       return;
     }
     const imageUrl = await uploadFile(file);
-    const response = await axios.post("http://localhost:3000/food", {
+    const response = await api.post("/food", {
       foodName: foodName,
       price: price,
       ingredients: ingredients,
@@ -58,11 +58,11 @@ export const CreatFoodDialog = ({
   };
   return (
     <Dialog>
-      <DialogTrigger className="border w-[270px] h-[241px] rounded-[20px] border-dashed border-red-600">
-        {" "}
-        <Button className="rounded-full bg-red-600 p-2">
+      <DialogTrigger className="flex min-h-[241px] flex-col items-center justify-center gap-3 rounded-[20px] border border-dashed border-red-600 p-4 transition-colors hover:bg-red-50">
+        <span className="flex size-10 items-center justify-center rounded-full bg-red-600 text-white">
           <Plus size={20} />
-        </Button>
+        </span>
+        <span className="text-sm font-medium">Add new Dish</span>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
