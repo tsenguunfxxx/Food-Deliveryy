@@ -2,13 +2,14 @@ import { Hono } from "hono";
 import {
   createFoodcategory,
   getFoodCategories,
+  updateCategory,
 } from "../controllers/food-category-controller.js";
-import { updateCategory } from "../controllers/food.controller.js";
+import { requireAdmin, requireAuth } from "../middleware/auth.js";
 
 const FoodCategoryRoute = new Hono();
 
-FoodCategoryRoute.post("/", createFoodcategory);
 FoodCategoryRoute.get("/", getFoodCategories);
-FoodCategoryRoute.put("/", updateCategory);
+FoodCategoryRoute.post("/", requireAuth, requireAdmin, createFoodcategory);
+FoodCategoryRoute.put("/:id", requireAuth, requireAdmin, updateCategory);
 
 export default FoodCategoryRoute;

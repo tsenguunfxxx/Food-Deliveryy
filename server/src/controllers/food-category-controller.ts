@@ -1,7 +1,9 @@
+import { Context } from "hono";
+
 import { connectDb } from "../lib/connectDb.js";
 import { FoodCategoryModel } from "../model/food-category-model.js";
 
-export const createFoodcategory = async (c) => {
+export const createFoodcategory = async (c: Context) => {
   await connectDb();
 
   const input = await c.req.json();
@@ -16,7 +18,7 @@ export const createFoodcategory = async (c) => {
   });
 };
 
-export const getFoodCategories = async (c) => {
+export const getFoodCategories = async (c: Context) => {
   await connectDb();
 
   const foodCategories = await FoodCategoryModel.find();
@@ -27,7 +29,7 @@ export const getFoodCategories = async (c) => {
   });
 };
 
-export const updateCategory = async (c) => {
+export const updateCategory = async (c: Context) => {
   await connectDb();
 
   const id = c.req.param("id");

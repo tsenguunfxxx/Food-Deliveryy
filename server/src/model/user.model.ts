@@ -11,6 +11,10 @@ const UserSchema = new Schema(
       enum: ["ADMIN", "USER"],
       default: "USER",
     },
+    // Түүхий token-ыг биш, зөвхөн hash-ийг хадгална — DB задарсан ч
+    // хэн нэгний нууц үгийг сэргээх боломжгүй байхын тулд.
+    resetPasswordTokenHash: String,
+    resetPasswordExpiresAt: Date,
   },
   {
     timestamps: true,
