@@ -68,7 +68,7 @@ export const FoodCard = ({ food }: { food: FoodType }) => {
         </DialogTrigger>
       </Card>
 
-      <DialogContent className="max-w-[826px] sm:max-w-[826px]">
+      <DialogContent className="sm:max-w-[826px]">
         <DialogTitle className="sr-only">{food.foodName}</DialogTitle>
         <div className="flex flex-col gap-6 md:flex-row">
           <img

@@ -347,7 +347,7 @@ export const CartSheet = () => {
       </Sheet>
 
       <Dialog open={success} onOpenChange={setSuccess}>
-        <DialogContent className="max-w-[400px] sm:max-w-[400px]">
+        <DialogContent className="sm:max-w-[400px]">
           <DialogTitle className="text-center">
             Your order has been successfully placed!
           </DialogTitle>

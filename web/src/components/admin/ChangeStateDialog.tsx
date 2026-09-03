@@ -34,7 +34,7 @@ export const ChangeStateDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[400px] sm:max-w-[400px]">
+      <DialogContent className="sm:max-w-[400px]">
         <DialogTitle>Change delivery state</DialogTitle>
         <p className="text-sm text-black/60">
           {count} захиалгын төлөв өөрчлөгдөнө.

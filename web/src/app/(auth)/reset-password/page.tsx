@@ -171,8 +171,8 @@ const ResetForm = () => {
 };
 
 const Page = () => (
-  <div className="flex h-screen w-full">
-    <div className="flex w-full flex-col items-center justify-center px-8 md:w-1/2">
+  <div className="flex min-h-screen w-full">
+    <div className="flex w-full flex-col items-center justify-center px-6 py-10 sm:px-8 md:w-1/2">
       <div className="w-full max-w-sm">
         <Suspense fallback={<p className="text-muted-foreground">Ачаалж байна...</p>}>
           <ResetForm />
@@ -180,8 +180,8 @@ const Page = () => (
       </div>
     </div>
 
-    <div className="hidden items-center justify-center md:flex md:w-1/2">
-      <div className="relative h-full w-full">
+    <div className="hidden md:block md:w-1/2">
+      <div className="sticky top-0 h-screen w-full">
         <Image
           src="/image.png"
           alt="Delivery courier riding a bike through a city street"

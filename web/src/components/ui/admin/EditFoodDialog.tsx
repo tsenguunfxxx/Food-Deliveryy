@@ -93,7 +93,7 @@ export const EditFoodDialog = ({
 
   return (
     <Dialog open={Boolean(food)} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[500px] sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Dishes info</DialogTitle>
         </DialogHeader>

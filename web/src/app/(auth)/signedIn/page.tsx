@@ -49,9 +49,9 @@ const Page = () => {
   };
 
   return (
-    <div className="flex h-screen w-full">
+    <div className="flex min-h-screen w-full">
       {/* Left: form */}
-      <div className="flex w-1/2 flex-col items-center justify-center px-8">
+      <div className="flex w-full flex-col items-center justify-center px-6 py-10 sm:px-8 md:w-1/2">
         <div className="w-full max-w-sm">
           <Button variant="outline" size="icon" className="mb-4">
             <Link href="/admin/menu">
@@ -164,13 +164,13 @@ const Page = () => {
       </div>
 
       {/* Right: image */}
-      <div className="flex items-center justify-center">
-        <div className="relative w-[856px] h-[904px]">
+      <div className="hidden md:block md:w-1/2">
+        <div className="sticky top-0 h-screen w-full">
           <Image
             src="/image.png"
             alt="Delivery courier riding a bike through a city street"
             fill
-            sizes="856px"
+            sizes="50vw"
             priority
             className="object-cover"
           />
