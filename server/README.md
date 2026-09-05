@@ -1,28 +1,27 @@
-Prerequisites:
+# NomNom API
 
-- [Vercel CLI](https://vercel.com/docs/cli) installed globally
+Hono + MongoDB. Хоол, ангилал, захиалга, хэрэглэгчийн API.
 
-To develop locally:
+## Локал ажиллуулах
 
-```
+```bash
 npm install
-vc dev
+cp .env.example .env   # утгуудыг бөглөнө
+npm run dev            # http://localhost:3000
 ```
 
-```
-open http://localhost:3000
+Шаардлагатай орчны хувьсагчдыг [.env.example](.env.example) дотор жагсаасан.
+
+## Хэрэглэгчид ADMIN эрх олгох
+
+```bash
+npm run make-admin -- хэн@нэгэн.com
 ```
 
-To build locally:
+Эрх нь JWT дотор бичигддэг тул дараа нь дахин нэвтрэх шаардлагатай.
 
-```
-npm install
-vc build
-```
+## Vercel
 
-To deploy:
-
-```
-npm install
-vc deploy
-```
+Энэ хавтас тусдаа Vercel төсөл болно — төслийн **Root Directory** нь
+`server` байх ёстой. Хүсэлтүүдийг [api/index.ts](api/index.ts) доторх
+serverless функц хүлээж авна.
